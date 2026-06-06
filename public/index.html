@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffd7e8" />
+    <title>小涵星叙</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/styles.css?v=star14" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <div class="pinned-panel">
+        <header class="topbar">
+          <div class="brand-block">
+            <div class="brand-mark" aria-hidden="true">
+              <span></span>
+            </div>
+            <div>
+              <h1>小涵星叙</h1>
+              <p id="statusText">正在检查配置...</p>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button id="settingsButton" class="tool-button" type="button" hidden>Key</button>
+            <button id="modelButton" class="tool-button" type="button">模型</button>
+            <button id="roleButton" class="tool-button" type="button">角色</button>
+            <button id="memoryButton" class="tool-button" type="button">记忆</button>
+            <button id="clearButton" class="icon-button" title="清空聊天" aria-label="清空聊天">×</button>
+          </div>
+        </header>
+
+        <section class="role-strip" aria-label="当前角色">
+          <div>
+            <span class="eyebrow">当前角色</span>
+            <strong id="activeRoleName">默认助手</strong>
+          </div>
+          <div class="role-strip-side">
+            <span id="activeRoleDesc">友好、清晰、实用</span>
+            <div class="scroll-shortcuts" aria-label="聊天滚动快捷按钮">
+              <button id="scrollBottomButton" class="scroll-shortcut" type="button" title="回到底部" aria-label="回到底部">↓</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="cute-widgets" aria-label="小组件">
+          <article class="mini-widget fortune-widget">
+            <span class="widget-kicker">今日小星签</span>
+            <strong>慢慢说，也会被听见</strong>
+          </article>
+          <article class="mini-widget mood-widget">
+            <span class="widget-kicker">心情泡泡</span>
+            <div class="mood-dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </article>
+          <article class="mini-widget candy-widget">
+            <span class="widget-kicker">糖果能量</span>
+            <div class="candy-meter" aria-hidden="true"><span></span></div>
+          </article>
+        </section>
+      </div>
+
+      <section id="messages" class="messages" aria-live="polite"></section>
+
+      <form id="chatForm" class="composer">
+        <div id="attachmentPreview" class="attachment-preview" aria-live="polite"></div>
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="输入消息，或添加图片/按住说话..."
+          autocomplete="off"
+          maxlength="1000"
+        ></textarea>
+        <div class="composer-tools">
+          <button id="imageButton" class="composer-tool" type="button" title="添加图片" aria-label="添加图片">图</button>
+          <button id="voiceButton" class="composer-tool" type="button" title="按住说话" aria-label="按住说话">话</button>
+          <button id="voiceReplyButton" class="composer-tool active" type="button" title="AI 自动朗读回复" aria-label="AI 自动朗读回复">声</button>
+          <input id="imageInput" type="file" accept="image/*" hidden />
+        </div>
+        <div class="composer-actions">
+          <button id="scrollTopButton" class="composer-scroll-top" type="button" title="回到顶部" aria-label="回到顶部">↑</button>
+          <button id="sendButton" type="submit">发送</button>
+        </div>
+      </form>
+      <div id="voiceToast" class="voice-toast" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <dialog id="settingsDialog" class="app-dialog settings-dialog">
+      <form method="dialog">
+        <header class="dialog-header">
+          <div>
+            <h2>API Key 设置</h2>
+            <p>Key 只保存在这台手机本地，用于直连火山方舟豆包。</p>
+          </div>
+          <button id="closeSettingsButton" class="dialog-close" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <div class="editor">
+          <label>
+            火山方舟 API Key
+            <input
+              id="apiKeyInput"
+              type="password"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="sk-..."
+            />
+          </label>
+          <label>
+            模型名称
+            <input id="modelInput" autocomplete="off" spellcheck="false" placeholder="doubao-seed-2-0-lite-260428" />
+          </label>
+          <p class="hint">保存后即可聊天。不要把自己的 Key 发给不信任的人。</p>
+        </div>
+
+        <footer class="dialog-actions settings-actions">
+          <button id="clearKeyButton" class="secondary danger" type="button">清除 Key</button>
+          <button id="saveSettingsButton" class="primary" type="button">保存配置</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="memoryDialog" class="app-dialog memory-dialog">
+      <form method="dialog">
+        <header class="dialog-header">
+          <div>
+            <h2>聊天记忆库</h2>
+            <p id="memoryMetaText">自动压缩重要聊天内容，并在后续对话中使用。</p>
+          </div>
+          <button id="closeMemoryButton" class="dialog-close" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <div class="memory-panel">
+          <section>
+            <h3>长期摘要</h3>
+            <p id="memorySummaryText" class="memory-summary">还没有生成记忆。</p>
+          </section>
+          <section>
+            <h3>重要条目</h3>
+            <div id="memoryItems" class="memory-items"></div>
+          </section>
+        </div>
+
+        <footer class="dialog-actions memory-actions">
+          <button id="exportMemoryButton" class="secondary" type="button">导出记忆</button>
+          <button id="showExportLocationButton" class="secondary" type="button">查看位置</button>
+          <button id="importMemoryButton" class="secondary" type="button">导入记忆</button>
+          <button id="refreshMemoryButton" class="secondary" type="button">立即压缩</button>
+          <button id="clearMemoryButton" class="secondary danger" type="button">清空记忆</button>
+          <button id="closeMemoryActionButton" class="primary" type="button">完成</button>
+          <input id="memoryImportInput" type="file" accept="application/json,.json" hidden />
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="roleDialog" class="app-dialog role-dialog">
+      <form id="roleForm" method="dialog">
+        <header class="dialog-header">
+          <div>
+            <h2>角色市场</h2>
+            <p>选择预设角色，或复制后改成自己的角色。</p>
+          </div>
+          <button id="closeRoleButton" class="dialog-close" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <div class="role-tabs" role="tablist" aria-label="角色分类">
+          <button class="role-tab active" type="button" data-category="all">全部</button>
+          <button class="role-tab" type="button" data-category="companion">陪伴</button>
+          <button class="role-tab" type="button" data-category="study">学习</button>
+          <button class="role-tab" type="button" data-category="story">小说</button>
+          <button class="role-tab" type="button" data-category="work">工作</button>
+          <button class="role-tab" type="button" data-category="custom">自定义</button>
+        </div>
+
+        <section class="role-market" aria-label="预设角色包">
+          <div id="roleMarket" class="market-grid"></div>
+        </section>
+
+        <div class="role-section-title">
+          <strong>我的角色</strong>
+          <span>保存后的角色会出现在这里</span>
+        </div>
+        <div id="roleList" class="role-list"></div>
+
+        <div class="editor">
+          <label>
+            角色名称
+            <input id="roleNameInput" maxlength="24" placeholder="例如：温柔心理陪伴" />
+          </label>
+          <label>
+            角色简介
+            <input id="roleDescInput" maxlength="80" placeholder="一句话描述这个角色" />
+          </label>
+          <label>
+            角色设定
+            <textarea
+              id="rolePromptInput"
+              rows="6"
+              maxlength="2000"
+              placeholder="写下身份、语气、说话风格、边界和回复规则..."
+            ></textarea>
+          </label>
+        </div>
+
+        <footer class="dialog-actions">
+          <button id="deleteRoleButton" class="secondary danger" type="button">删除</button>
+          <button id="newRoleButton" class="secondary" type="button">新建</button>
+          <button id="saveRoleButton" class="primary" type="button">保存并使用</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <script src="/config.js?v=star11"></script>
+    <script src="/app.js?v=star14" type="module"></script>
+  </body>
+</html>

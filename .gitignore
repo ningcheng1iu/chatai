@@ -1,0 +1,12 @@
+node_modules/
+.env
+npm-debug.log*
+dist/
+build/
+.tools/
+models/
+android/app/build/
+android/app/.cxx/
+*.apk
+*.aab
+*.exe

@@ -1,0 +1,17 @@
+{
+  "name": "小涵星叙",
+  "short_name": "小涵星叙",
+  "description": "小涵星叙聊天 AI 应用",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff4f8",
+  "theme_color": "#ffd7e8",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

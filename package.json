@@ -1,0 +1,26 @@
+{
+  "name": "deepseek-chat-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:apk": "cd android && gradlew.bat assembleDebug",
+    "android:install:keep": "cd android && gradlew.bat installDebug",
+    "android:install:keep:downgrade": "adb install -r -d android/app/build/outputs/apk/debug/app-debug.apk"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4"
+  }
+}
